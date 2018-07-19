@@ -51,28 +51,28 @@ config = cms.PSet(
       reference_datasets = cms.vstring("default"),
 
       rp_L_1_F = cms.PSet(
-        x_min = cms.double(46.5),
-        x_max = cms.double(57.),
-        sh_min = cms.double(-43),
-        sh_max = cms.double(-41)
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
+        sh_min = cms.double(-4.5),
+        sh_max = cms.double(-3.3)
       ),
       rp_L_1_N = cms.PSet(
-        x_min = cms.double(8.),
-        x_max = cms.double(18.),
-        sh_min = cms.double(-4.2),
-        sh_max = cms.double(-2.4)
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
+        sh_min = cms.double(-3.7),
+        sh_max = cms.double(-0.8)
       ),
       rp_R_1_N = cms.PSet(
-        x_min = cms.double(7.5),
-        x_max = cms.double(18.),
-        sh_min = cms.double(-3.6),
-        sh_max = cms.double(-1.8)
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
+        sh_min = cms.double(-4.3),
+        sh_max = cms.double(-2.8)
       ),
       rp_R_1_F = cms.PSet(
-        x_min = cms.double(47.),
-        x_max = cms.double(57.),
-        sh_min = cms.double(-43.2),
-        sh_max = cms.double(-41.2)
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
+        sh_min = cms.double(-4.2),
+        sh_max = cms.double(-2.5)
       )
     ),
 
