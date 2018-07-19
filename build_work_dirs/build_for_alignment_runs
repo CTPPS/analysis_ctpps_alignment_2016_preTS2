@@ -3,18 +3,18 @@
 function GetOne()
 {
 	local fill="$1"
-	local xangle="$2"
-	local ds="$3"
-	local search="$4"
+	local run="$2"
 
 	# make work directory
-	local dir="$top_dir/fill_$fill/xangle_$xangle/$ds/"
+	local dir="$top_dir/fill_$fill/run_$run/"
 	mkdir -p "$dir"
 
 	# get input files
 	input_files=""
-	for f in `eos ls "$eos_dir"|grep "$search"|grep ".root"`
+	for d in `eos ls "$eos_dir/$run"`
 	do
+		f="$run/$d/reco.root"
+
 		if [ -n "$input_files" ]
 		then
 			input_files="$input_files,\n"
@@ -33,17 +33,19 @@ function GetOne()
 	) > "$dir/input_files.py"
 
 	# if not present, make (default) config
-	if [ ! -f "$dir/config.py" ]
-	then
-		cp "config_template.py" "$dir/config.py"
-	fi
+	cat "config_template.py" | sed "\
+			s|\$fill|$fill|;\
+			s|\$dataset|run $run|;\
+		" > "$dir/config.py"
 }
 
 #----------------------------------------------------------------------------------------------------
 
 top_dir="../data/alig"
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_September/version4"
+eos_dir="/eos/totem/data/ctpps/reconstruction/alignment_run_version2"
 
-GetOne "6228" "150" "DS1" "run_303652"
-GetOne "6228" "130" "DS1" "run_303658"
-GetOne "6228" "110" "DS1" "run_303665"
+GetOne "4828" "10077"
+GetOne "4828" "10079"
+GetOne "4828" "10080"
+GetOne "4828" "10081"
+GetOne "4828" "10082"

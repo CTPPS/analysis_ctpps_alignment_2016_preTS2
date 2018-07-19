@@ -12,6 +12,13 @@ function ImportOneGroup()
 
 #----------------------------------------------------------------------------------------------------
 
+input_dir="/afs/cern.ch/work/j/jkaspar/analyses/ctpps/alignment/2016_preTS2_old/period1_alignment"
+output_dir="../data/alig"
+
+cp "$input_dir/10077/config.py" "$output_dir/fill_4828/config_common.py"
+
+ImportOneGroup
+
 input_dir="/afs/cern.ch/work/j/jkaspar/analyses/ctpps/alignment/2016_preTS2_old/period1_physics_margin"
 output_dir="../data/phys_margin"
 
