@@ -461,7 +461,7 @@ int main()
 	for (auto ref : cfg.matching_reference_datasets)
 	{
 		if (ref == "default")
-			ref = "data/alig/fill_4828/run_10077";
+			ref = "data/alig/fill_4828/run_10080";
 
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 
