@@ -1,0 +1,7 @@
+*.swp
+*.root
+*.pdf
+*.log
+*.pyc
+
+distributions

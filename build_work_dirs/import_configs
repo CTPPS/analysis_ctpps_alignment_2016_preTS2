@@ -1,0 +1,23 @@
+#!/bin/bash
+
+function ImportOneGroup()
+{
+	for d in `ls $input_dir|grep fill_`
+	do
+		fill=${d#fill_}
+		echo "* fill $fill"
+		cp "$input_dir/$d/config.py" "$output_dir/fill_$fill/config_common.py"
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+input_dir="/afs/cern.ch/work/j/jkaspar/analyses/ctpps/alignment/2016_preTS2_old/period1_physics_margin"
+output_dir="../data/phys_margin"
+
+ImportOneGroup
+
+input_dir="/afs/cern.ch/work/j/jkaspar/analyses/ctpps/alignment/2016_preTS2_old/period1_physics"
+output_dir="../data/phys_no_margin"
+
+ImportOneGroup
