@@ -26,14 +26,14 @@ config.sector_56.cut_v_a = -1.139
 config.sector_56.cut_v_c = 0.400
 config.sector_56.cut_v_si = 0.150
 
-config.matching.rp_L_1_F.x_min = 3.50
-config.matching.rp_L_1_F.x_max = 11.00
-config.matching.rp_L_1_N.x_min = 3.70
-config.matching.rp_L_1_N.x_max = 10.50
-config.matching.rp_R_1_N.x_min = 2.00
-config.matching.rp_R_1_N.x_max = 10.00
-config.matching.rp_R_1_F.x_min = 2.00
-config.matching.rp_R_1_F.x_max = 10.00
+config.matching.rp_L_1_F.x_min = 4.0
+config.matching.rp_L_1_F.x_max = 12.5
+config.matching.rp_L_1_N.x_min = 4.4
+config.matching.rp_L_1_N.x_max = 12.5
+config.matching.rp_R_1_N.x_min = 3.0
+config.matching.rp_R_1_N.x_max = 12.0
+config.matching.rp_R_1_F.x_min = 3.0
+config.matching.rp_R_1_F.x_max = 11.5
 
 config.alignment_y.rp_L_1_F.x_min = 0.00
 config.alignment_y.rp_L_1_F.x_max = 0.00

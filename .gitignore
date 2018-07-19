@@ -3,6 +3,9 @@
 *.pdf
 *.log
 *.pyc
+.*
+
+!.gitignore
 
 distributions
 match
