@@ -14,6 +14,8 @@
 
 #include "DataFormats/CTPPSDetId/interface/TotemRPDetId.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
+#include "DataFormats/Common/interface/DetSetVector.h"
+#include "DataFormats/CTPPSReco/interface/TotemRPLocalTrack.h"
 
 #include <vector>
 #include <string>
@@ -420,18 +422,42 @@ int main()
 		ev_count++;
 
 		// TODO: comment out
-		//if (tr_sel_count > 1000)
+		//if (ev_count > 1000)
 		//	break;
 
 		// get track data
-		fwlite::Handle< vector<CTPPSLocalTrackLite> > hTracks;
-		hTracks.getByLabel(ev, "ctppsLocalTrackLiteProducer");
+		const vector<CTPPSLocalTrackLite> *p_tracks = NULL;
+		vector<CTPPSLocalTrackLite> built_tracks;
+
+		if (cfg.fill == 4828)
+		{
+			// for alignemnt run: build lite tracks from full tracks
+			fwlite::Handle< DetSetVector<TotemRPLocalTrack> > hFTracks;
+			hFTracks.getByLabel(ev, "totemRPLocalTrackFitter");
+
+			for (const auto &ds : *hFTracks)
+			{
+				const auto &rpId = ds.detId();
+				unsigned int arm = rpId / 100;
+				unsigned int st = (rpId / 10) % 10;
+				unsigned int rp = rpId % 10;
+
+				for (const auto &tr : ds)
+					built_tracks.emplace_back(TotemRPDetId(arm, st, rp), tr.getX0(), 0., tr.getY0(), 0.);
+			}
+
+			p_tracks = &built_tracks;
+		} else {
+			fwlite::Handle< vector<CTPPSLocalTrackLite> > hTracks;
+			hTracks.getByLabel(ev, "ctppsLocalTrackLiteProducer");
+			p_tracks = & (*hTracks);
+		}
 
 		// process tracks
-		if (sectorData45.Process(*hTracks))
+		if (sectorData45.Process(*p_tracks))
 			ev_sel_count_45++;
 
-		if (sectorData56.Process(*hTracks))
+		if (sectorData56.Process(*p_tracks))
 			ev_sel_count_56++;
 	}
 
