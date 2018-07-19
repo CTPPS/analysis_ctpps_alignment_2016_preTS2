@@ -6,6 +6,8 @@ sys.path.append(os.path.relpath("../../../../"))
 
 from config_base import config
 
+config.rps_have_margin = True
+
 #config.sector_45.cut_h_apply = True
 config.sector_45.cut_h_a = -1.009
 config.sector_45.cut_h_c = -2.380

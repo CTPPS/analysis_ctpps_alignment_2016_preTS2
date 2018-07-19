@@ -38,6 +38,7 @@ struct Config
 {
 	unsigned int fill;
 	string dataset;
+	bool rps_have_margin;
 
 	map<unsigned int, string> rp_tags;
 
@@ -80,6 +81,7 @@ int Config::LoadFrom(const string &f_in)
 
 	fill = config.getParameter<unsigned int>("fill");
 	dataset = config.getParameter<string>("dataset");
+	rps_have_margin = config.getParameter<bool>("rps_have_margin");
 
 	input_files = config.getParameter<vector<string>>("input_files");
 
@@ -164,6 +166,7 @@ void Config::Print(bool print_input_files) const
 	printf("* general info\n");
 	printf("    fill = %u\n", fill);
 	printf("    dataset = %s\n", dataset.c_str());
+	printf("    rps_have_margin = %i\n", rps_have_margin);
 
 	printf("\n");
 	printf("* dataset already aligned\n");

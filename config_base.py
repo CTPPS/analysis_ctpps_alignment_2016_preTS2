@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 config = cms.PSet(
     fill = cms.uint32(0),
     dataset = cms.string(""),
+    rps_have_margin = cms.bool(False),
 
     alignment_corrections = cms.PSet(
       rp_L_1_F = cms.PSet(
