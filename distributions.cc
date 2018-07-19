@@ -212,23 +212,6 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 		double x = tr.getX();
 		double y = tr.getY();
 
-		// apply package-flip correction
-		// TODO: remove ??
-		/*
-		if (!cfg.aligned && (rpDecId == 3 || rpDecId == 103))
-		{
-			constexpr double tau = 8. / 180. * M_PI;
-			constexpr double ed = cos(2.*tau);
-			constexpr double ead = sin(2.*tau);
-
-			const double x_o = x;
-			const double y_o = y;
-
-			x = ed * x_o + ead * y_o;
-			y = ead * x_o - ed * y_o;
-		}
-		*/
-
 		// apply alignment corrections
 		x += cfg.alignment_corrections_x[rpDecId];
 
@@ -394,8 +377,8 @@ int main()
 	}
 
 	// TODO
-	if (cfg.input_files.size() > 2)
-		cfg.input_files.resize(2);
+	//if (cfg.input_files.size() > 2)
+	//	cfg.input_files.resize(2);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
