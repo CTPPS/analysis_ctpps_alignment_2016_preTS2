@@ -1,4 +1,11 @@
 #include <cstring>
+#include <cstdio>
+#include <map>
+#include <vector>
+#include <set>
+#include <cmath>
+
+#include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
 
 using namespace std;
 
@@ -8,15 +15,23 @@ struct AlignmentResult
 {
 	double sh_x, sh_x_unc;		// mm
 	double sh_y, sh_y_unc;		// mm
+	double rot_z, rot_z_unc;	// rad
 
-	AlignmentResult(double _sh_x=0., double _sh_x_unc=0., double _sh_y=0., double _sh_y_unc=0.) :
-		sh_x(_sh_x), sh_x_unc(_sh_x_unc), sh_y(_sh_y), sh_y_unc(_sh_y_unc)
+	AlignmentResult(double _sh_x=0., double _sh_x_unc=0., double _sh_y=0., double _sh_y_unc=0., double _rot_z=0., double _rot_z_unc=0.) :
+		sh_x(_sh_x), sh_x_unc(_sh_x_unc), sh_y(_sh_y), sh_y_unc(_sh_y_unc), rot_z(_rot_z), rot_z_unc(_rot_z_unc)
 	{
 	}
 
 	void Write(FILE *f) const
 	{
-		fprintf(f, "sh_x=%.3f,sh_x_unc=%.3f,sh_y=%.3f,sh_y_unc=%.3f\n", sh_x, sh_x_unc, sh_y, sh_y_unc);
+		fprintf(f, "sh_x=%.3f,sh_x_unc=%.3f,sh_y=%.3f,sh_y_unc=%.3f,rot_z=%.4f,rot_z_unc=%.4f\n", sh_x, sh_x_unc, sh_y, sh_y_unc, rot_z, rot_z_unc);
+	}
+
+	CTPPSLocalTrackLite Apply(const CTPPSLocalTrackLite &tr) const
+	{
+		const double x = cos(rot_z) * tr.getX() + sin(rot_z) * tr.getY() + sh_x;
+		const double y = -sin(rot_z) * tr.getX() + cos(rot_z) * tr.getY() + sh_y;
+		return CTPPSLocalTrackLite(tr.getRPId(), x, 0., y, 0.);
 	}
 };
 
@@ -88,6 +103,18 @@ struct AlignmentResults : public map<unsigned int, AlignmentResult>
 			if (strcmp(s_key, "sh_y_unc") == 0)
 			{
 				result.sh_y_unc = atof(s_val);
+				continue;
+			}
+
+			if (strcmp(s_key, "rot_z") == 0)
+			{
+				result.rot_z = atof(s_val);
+				continue;
+			}
+
+			if (strcmp(s_key, "rot_z_unc") == 0)
+			{
+				result.rot_z_unc = atof(s_val);
 				continue;
 			}
 
