@@ -1,13 +1,17 @@
+#ifndef _alignment_classes_h_
+#define _alignment_classes_h_
+
 #include <cstring>
 #include <cstdio>
+#include <cmath>
 #include <map>
 #include <vector>
 #include <set>
-#include <cmath>
+#include <string>
 
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
 
-using namespace std;
+#include "DataFormats/CTPPSDetId/interface/TotemRPDetId.h"
 
 //----------------------------------------------------------------------------------------------------
 
@@ -24,20 +28,20 @@ struct AlignmentResult
 
 	void Write(FILE *f) const
 	{
-		fprintf(f, "sh_x=%.3f,sh_x_unc=%.3f,sh_y=%.3f,sh_y_unc=%.3f,rot_z=%.4f,rot_z_unc=%.4f\n", sh_x, sh_x_unc, sh_y, sh_y_unc, rot_z, rot_z_unc);
+		fprintf(f, "sh_x=%+.3f,sh_x_unc=%+.3f,sh_y=%+.3f,sh_y_unc=%+.3f,rot_z=%+.4f,rot_z_unc=%+.4f\n", sh_x, sh_x_unc, sh_y, sh_y_unc, rot_z, rot_z_unc);
 	}
 
 	CTPPSLocalTrackLite Apply(const CTPPSLocalTrackLite &tr) const
 	{
 		const double x = cos(rot_z) * tr.getX() + sin(rot_z) * tr.getY() + sh_x;
-		const double y = -sin(rot_z) * tr.getX() + cos(rot_z) * tr.getY() + sh_y;
+		const double y = -sin(rot_z) * tr.getX() + cos(rot_z) * tr.getY() - sh_y;
 		return CTPPSLocalTrackLite(tr.getRPId(), x, 0., y, 0.);
 	}
 };
 
 //----------------------------------------------------------------------------------------------------
 
-struct AlignmentResults : public map<unsigned int, AlignmentResult>
+struct AlignmentResults : public std::map<unsigned int, AlignmentResult>
 {
 	void Write(FILE *f) const
 	{
@@ -132,13 +136,29 @@ struct AlignmentResults : public map<unsigned int, AlignmentResult>
 
 		return 0;
 	}
+
+	std::vector<CTPPSLocalTrackLite> Apply(const std::vector<CTPPSLocalTrackLite> &input) const
+	{
+        std::vector<CTPPSLocalTrackLite> output;
+
+		for (auto &t : input)
+		{
+			auto ait = find(t.getRPId());
+			if (ait == end())
+              throw cms::Exception("alignment") << "No alignment data for RP " << t.getRPId();
+
+            output.emplace_back(ait->second.Apply(t));
+		}
+
+		return output;
+	}
 };
 
 //----------------------------------------------------------------------------------------------------
 
-struct AlignmentResultsCollection : public map<string, AlignmentResults>
+struct AlignmentResultsCollection : public std::map<std::string, AlignmentResults>
 {
-	int Write(const string &fn) const
+	int Write(const std::string &fn) const
 	{
 		FILE *f = fopen(fn.c_str(), "w");
 		if (!f)
@@ -160,7 +180,7 @@ struct AlignmentResultsCollection : public map<string, AlignmentResults>
 		}
 	}
 
-	int Load(const string &fn)
+	int Load(const std::string &fn)
 	{
 		FILE *f = fopen(fn.c_str(), "r");
 		if (!f)
@@ -173,7 +193,7 @@ struct AlignmentResultsCollection : public map<string, AlignmentResults>
 
 	int Load(FILE *f)
 	{
-		string label = "unknown";
+		std::string label = "unknown";
 		AlignmentResults block;
 
 		while (!feof(f))
@@ -218,3 +238,5 @@ struct AlignmentResultsCollection : public map<string, AlignmentResults>
 		return 0;
 	}
 };
+
+#endif
