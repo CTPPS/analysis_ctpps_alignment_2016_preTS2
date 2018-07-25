@@ -102,12 +102,12 @@ int main()
 		g_results->SetPoint(1, a, a_unc);
 		g_results->SetPoint(2, b, b_unc);
 		g_results->Write("g_results");
+
+		results["y_alignment"][rpd.id] = AlignmentResult(0., 0., b, b_unc, 0., 0.);
 	}
 
 	// write results
-	FILE *f_results = fopen("y_alignment.out", "w"); 
-	results.Write(f_results);
-	fclose(f_results);
+	results.Write("y_alignment.out");
 
 	// clean up
 	delete f_out;
