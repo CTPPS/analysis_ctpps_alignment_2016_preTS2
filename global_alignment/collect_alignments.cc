@@ -83,8 +83,8 @@ struct AlignmentInput
 			}
 
 			mean.sh_x += it->second.sh_x;
-			mean.sh_y += it->second.sh_x;
-			mean.rot_z += it->second.sh_x;
+			mean.sh_y += it->second.sh_y;
+			mean.rot_z += it->second.rot_z;
 		}
 		
 		mean.sh_x /= streams.size();
@@ -183,8 +183,8 @@ int main()
 		{
 			error = false;
 			const AlignmentResult &ar_sh_x = input_sh_x.GetMeanAlignment(rpId, error);
-			const AlignmentResult &ar_sh_y = input_sh_x.GetMeanAlignment(rpId, error);
-			const AlignmentResult &ar_rot_z = input_sh_x.GetMeanAlignment(rpId, error);
+			const AlignmentResult &ar_sh_y = input_sh_y.GetMeanAlignment(rpId, error);
+			const AlignmentResult &ar_rot_z = input_rot_z.GetMeanAlignment(rpId, error);
 
 			if (error)
 				continue;
