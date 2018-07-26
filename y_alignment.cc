@@ -36,13 +36,14 @@ int main()
 		string name;
 		unsigned int id;
 		string sectorName;
+		double slope;
 	};
 
 	vector<RPData> rpData = {
-		{ "L_1_F", 3,   "sector 45" },
-		{ "L_1_N", 2,   "sector 45" },
-		{ "R_1_N", 102, "sector 56" },
-		{ "R_1_F", 103, "sector 56" }
+		{ "L_1_F", 3,   "sector 45", -0.03 },
+		{ "L_1_N", 2,   "sector 45", -0.03 },
+		{ "R_1_N", 102, "sector 56", -0.015 },
+		{ "R_1_F", 103, "sector 56", -0.015 }
 	};
 
 	// get input
@@ -65,6 +66,7 @@ int main()
 	AlignmentResultsCollection results;
 
 	TF1 *ff = new TF1("ff", "[0] + [1]*x");
+	TF1 *ff_sl_fix = new TF1("ff_sl_fix", "[0] + [1]*x");
 
 	// processing
 	for (const auto &rpd : rpData)
@@ -90,20 +92,32 @@ int main()
 		printf("    x_min = %.3f, x_max = %.3f\n", x_min, x_max);
 
 		ff->SetParameters(0., 0.);
+		ff->SetLineColor(2);
 		p_y_vs_x->Fit(ff, "Q", "", x_min, x_max);
-
-		p_y_vs_x->Write("p_y_vs_x");
 
 		const double a = ff->GetParameter(1), a_unc = ff->GetParError(1);
 		const double b = ff->Eval(-sh_x), b_unc = sqrt(pow(a_unc * sh_x, 2.) + pow(ff->GetParError(0), 2.));
+
+		results["y_alignment"][rpd.id] = AlignmentResult(0., 0., b, b_unc, 0., 0.);
+
+		ff_sl_fix->SetParameters(0., 0.);
+		ff_sl_fix->FixParameter(1, rpd.slope);
+		ff_sl_fix->SetLineColor(4);
+		p_y_vs_x->Fit(ff_sl_fix, "Q+", "", x_min, x_max);
+
+		const double b_fs = ff_sl_fix->Eval(-sh_x), b_fs_unc = ff_sl_fix->GetParError(0);
+
+		results["y_alignment_sl_fix"][rpd.id] = AlignmentResult(0., 0., b_fs, b_fs_unc, 0., 0.);
+
+		p_y_vs_x->Write("p_y_vs_x");
 
 		TGraph *g_results = new TGraph();
 		g_results->SetPoint(0, sh_x, 0.);
 		g_results->SetPoint(1, a, a_unc);
 		g_results->SetPoint(2, b, b_unc);
+		g_results->SetPoint(3, b_fs, b_fs_unc);
 		g_results->Write("g_results");
 
-		results["y_alignment"][rpd.id] = AlignmentResult(0., 0., b, b_unc, 0., 0.);
 	}
 
 	// write results

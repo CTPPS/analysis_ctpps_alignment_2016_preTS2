@@ -6,10 +6,10 @@ string topDir = "../../data/";
 int rp_ids[];
 string rps[], rp_labels[];
 real rp_x_min[], rp_x_max[], rp_y_cen[];
-//rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr-hr"); rp_x_min.push(-3.65); rp_x_max.push(-4.17); rp_y_cen.push(-0.75);
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr-hr"); rp_x_min.push(-3.65); rp_x_max.push(-4.17); rp_y_cen.push(-0.75);
 rp_ids.push(2); rps.push("L_1_N"); rp_labels.push("L-210-nr-hr"); rp_x_min.push(-1.15); rp_x_max.push(-0.00); rp_y_cen.push(-0.4);
 rp_ids.push(102); rps.push("R_1_N"); rp_labels.push("R-210-nr-hr"); rp_x_min.push(-3.32); rp_x_max.push(-3.93); rp_y_cen.push(-0.4);
-//rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr-hr"); rp_x_min.push(-2.96); rp_x_max.push(-3.57); rp_y_cen.push(-0.6);
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr-hr"); rp_x_min.push(-2.96); rp_x_max.push(-3.57); rp_y_cen.push(-0.6);
 
 xSizeDef = 9cm;
 
@@ -17,7 +17,22 @@ xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.1, 0.05);
 
 string datasets[] = {
-	"phys_no_margin/fill_5005/DoubleEG"
+	"phys_margin/fill_4947/DoubleEG",
+	"phys_no_margin/fill_5005/DoubleEG",
+	"phys_no_margin/fill_5038/DoubleEG",
+
+	"phys_no_margin/fill_5261/DoubleEG",
+	"phys_no_margin/fill_5275/DoubleEG",
+	"phys_no_margin/fill_5287/DoubleEG",
+	"phys_no_margin/fill_5288/DoubleEG",
+};
+
+string datasets[] = {
+	"phys_no_margin/fill_5024/DoubleEG",
+	"phys_no_margin/fill_5026/DoubleEG",
+	"phys_no_margin/fill_5038/DoubleEG",
+	"phys_no_margin/fill_5045/DoubleEG",
+	"phys_no_margin/fill_5261/DoubleEG",
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -63,7 +78,7 @@ for (int dsi : datasets.keys)
 
 		draw((-sh_x, b), mCi+3pt+magenta);
 	
-		limits((0, y_cen - 0.5), (15, y_cen + 0.5), Crop);
+		limits((2, y_cen - 0.5), (18, y_cen + 0.5), Crop);
 
 		yaxis(XEquals(-sh_x, false), heavygreen);
 	

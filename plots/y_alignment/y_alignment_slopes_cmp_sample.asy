@@ -1,12 +1,12 @@
 import root;
 import pad_layout;
-include "../fills_samples.asy";
 
 string topDir = "../../data/";
 
-//----------------------------------------------------------------------------------------------------
-
+include "../fills_samples.asy";
 InitDataSets();
+
+//----------------------------------------------------------------------------------------------------
 
 string sample_labels[];
 pen sample_pens[];

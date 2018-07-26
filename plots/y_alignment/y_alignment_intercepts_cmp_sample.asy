@@ -1,12 +1,12 @@
 import root;
 import pad_layout;
-include "../fills_samples.asy";
 
 string topDir = "../../data/";
 
-//----------------------------------------------------------------------------------------------------
-
+include "../fills_samples.asy";
 InitDataSets();
+
+//----------------------------------------------------------------------------------------------------
 
 string sample_labels[];
 pen sample_pens[];
@@ -98,12 +98,13 @@ for (int rpi : rps.keys)
 				results.vExec("GetPoint", 0, ax, ay); real sh_x = ax[0];
 				results.vExec("GetPoint", 1, ax, ay); real a = ax[0], a_unc = ay[0];
 				results.vExec("GetPoint", 2, ax, ay); real b = ax[0], b_unc = ay[0];
+				results.vExec("GetPoint", 3, ax, ay); real b_fs = ax[0], b_fs_unc = ay[0];
 
 				pen p = sample_pens[sai];
 
 				{
-					draw((x, b), m + p);
-					draw((x, b-b_unc)--(x, b+b_unc), p);
+					draw((x, b_fs), m + p);
+					draw((x, b_fs - b_fs_unc)--(x, b_fs + b_fs_unc), p);
 				}
 			}
 		}
