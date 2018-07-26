@@ -1,0 +1,27 @@
+BLOCK 1: rot_z alignment
+--------------------------------------------------
+
+1) run distributions; no input alignment
+2) run y_alignment; input alignment does not matter
+3) run global_alignment/tilt_fit and check whether the "smooth" graph describes well the data
+4) run rot_z_alignment
+5) run global_alignment/collect_alignments; collect only the rot_z alignments and make them a standard file
+
+
+BLOCK 2: sh_x alignment
+--------------------------------------------------
+
+1) run distributions; input alignment is the rot_z file from previous step
+2) run match
+3) define fine corrections and import them to process_alignments.cc TODO: rename it
+4) run process_alignments
+5) run global_alignment/collect_alignments; collect both rot_z (step 1.5) and sh_x (2.4) alignments and make them a standard file
+6) run relative_fine_tuning; input alignment from step 2.5
+7) run global_alignment/collect_alignments: collect rot_z (step 1.5) and sh_x (step 2.6)
+
+
+BLOCK 3: sh_y alignment
+--------------------------------------------------
+
+1) run y_alignment; input alignment from step 2.7
+2) run global_alignment/collect_alignments: rot_z (step 1.5), sh_x (step 2.6) and sh_y (step 3.1)
