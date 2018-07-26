@@ -7,6 +7,8 @@
 
 !.gitignore
 
+copy_alignment
 distributions
 match
-./y_alignment
+rot_z_alignment
+y_alignment
