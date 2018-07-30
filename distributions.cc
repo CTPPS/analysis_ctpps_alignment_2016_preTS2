@@ -1,5 +1,7 @@
 #include "config.h"
 #include "stat.h"
+#include "alignment_classes.h"
+#include "fill_info.h"
 
 #include "TFile.h"
 #include "TH1D.h"
@@ -139,6 +141,11 @@ struct SectorData
 	// profiles
 	map<unsigned int, Profile> m_p_y_vs_x_aft_sel;
 
+	// near-far plots
+	TProfile *p_x_diffFN_vs_x_N;
+	TProfile *p_y_diffFN_vs_y_N;
+	TProfile *p_y_diffFN_vs_y_F;
+
 	SectorData(const string _name, unsigned int _rpIdUp, unsigned int _rpIdDw, const SectorConfig &_scfg);
 
 	unsigned int Process(const vector<CTPPSLocalTrackLite> &tracks);
@@ -192,6 +199,11 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	// profiles
 	m_p_y_vs_x_aft_sel[rpIdUp] = Profile(m_h2_y_vs_x_aft_sel[rpIdUp]);
 	m_p_y_vs_x_aft_sel[rpIdDw] = Profile(m_h2_y_vs_x_aft_sel[rpIdDw]);
+
+	// near-far plots
+	p_x_diffFN_vs_x_N = new TProfile("", ";x_{N};x_{F} - x_{N}", 100, 0., 20.);
+	p_y_diffFN_vs_y_N = new TProfile("", ";y_{N};y_{F} - y_{N}", 400, -10., 10.);
+	p_y_diffFN_vs_y_F = new TProfile("", ";y_{F};y_{F} - y_{N}", 400, -10., 10.);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -291,6 +303,18 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 
 				m_p_y_vs_x_aft_sel[rpIdUp].Fill(trUp.getX(), trUp.getY());
 				m_p_y_vs_x_aft_sel[rpIdDw].Fill(trDw.getX(), trDw.getY());
+
+				p_x_diffFN_vs_x_N->Fill(trUp.getX(), trDw.getX() - trUp.getX());
+
+				// TODO: remove hardcoded configuration
+				double x_cutoff = 0.;
+				if (name == "sector 45") x_cutoff = 11.5;
+				if (name == "sector 56") x_cutoff = 8.0;
+				if (trDw.getX() > x_cutoff)
+				{
+					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
+					p_y_diffFN_vs_y_F->Fill(trDw.getY(), trDw.getY() - trUp.getY());
+				}
 			}
 		}
 	}
@@ -360,6 +384,14 @@ void SectorData::Write() const
 		p.second.Write();
 	}
 
+	// near-far plots
+	TDirectory *d_near_far = d_sector->mkdir("near_far");
+	gDirectory = d_near_far;
+
+	p_x_diffFN_vs_x_N->Write("p_x_diffFN_vs_x_N");
+	p_y_diffFN_vs_y_N->Write("p_y_diffFN_vs_y_N");
+	p_y_diffFN_vs_y_F->Write("p_y_diffFN_vs_y_F");
+
 	// clean up
 	gDirectory = d_top;
 }
@@ -377,12 +409,22 @@ int main()
 	}
 
 	// TODO
-	//if (cfg.input_files.size() > 2)
-	//	cfg.input_files.resize(2);
+	//if (cfg.input_files.size() > 1)
+	//	cfg.input_files.resize(1);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
 	printf("--------------------------------------------------\n");
+
+	// get fill info
+	InitFillInfoCollection();
+	const auto &fillInfo = fillInfoCollection.FindByFill(cfg.fill, cfg.rps_have_margin);
+
+	//  load alignment
+	AlignmentResultsCollection alignmentCollection;
+	alignmentCollection.Load("../../../../global_alignment/data/collect_alignments_tilt_test.out");
+	printf("* global alignment tag: %s\n", fillInfo.alignmentTag.c_str());
+	const auto alignments = alignmentCollection.find(fillInfo.alignmentTag)->second;
 
 	// setup input
 	fwlite::ChainEvent ev(cfg.input_files);
@@ -403,10 +445,6 @@ int main()
 	for (ev.toBegin(); ! ev.atEnd(); ++ev)
 	{
 		ev_count++;
-
-		// TODO: comment out
-		//if (ev_count > 1000)
-		//	break;
 
 		// get track data
 		const vector<CTPPSLocalTrackLite> *p_tracks = NULL;
@@ -436,11 +474,21 @@ int main()
 			p_tracks = & (*hTracks);
 		}
 
+		// apply alignment
+		vector<CTPPSLocalTrackLite> tracks_aligned;
+		for (const auto &tr : *p_tracks)
+		{
+			TotemRPDetId rpId(tr.getRPId());
+			unsigned int decId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
+			const auto ait = alignments.find(decId);
+			tracks_aligned.emplace_back(ait->second.Apply(tr));
+		}
+
 		// process tracks
-		if (sectorData45.Process(*p_tracks))
+		if (sectorData45.Process(tracks_aligned))
 			ev_sel_count_45++;
 
-		if (sectorData56.Process(*p_tracks))
+		if (sectorData56.Process(tracks_aligned))
 			ev_sel_count_56++;
 	}
 
