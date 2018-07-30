@@ -72,9 +72,13 @@ struct AlignmentInput
 		if (file == "none")
 			return mean;
 
+		double S_sh_x = 0., S_sh_y = 0., S_rot_z = 0.;
+		double Sw_sh_x = 0., Sw_sh_y = 0., Sw_rot_z = 0.;
+
 		for (unsigned int i = 0; i < streams.size(); ++i)
 		{
 			const auto it = collection[i].find(rpId);
+
 			if (it == collection[i].end())
 			{
 				printf("ERROR: can't get RP '%u' from file '%s' and stream '%s'.\n", rpId, file.c_str(), streams[i].c_str());
@@ -82,14 +86,22 @@ struct AlignmentInput
 				return mean;
 			}
 
-			mean.sh_x += it->second.sh_x;
-			mean.sh_y += it->second.sh_y;
-			mean.rot_z += it->second.rot_z;
+			const double w_sh_x = (it->second.sh_x_unc > 0.) ? 1. / it->second.sh_x_unc / it->second.sh_x_unc : 1.;
+			S_sh_x += it->second.sh_x * w_sh_x;
+			Sw_sh_x += w_sh_x;
+
+			const double w_sh_y = (it->second.sh_y_unc > 0.) ? 1. / it->second.sh_y_unc / it->second.sh_y_unc : 1.;
+			S_sh_y += it->second.sh_y * w_sh_y;
+			Sw_sh_y += w_sh_y;
+
+			const double w_rot_z = (it->second.rot_z_unc > 0.) ? 1. / it->second.rot_z_unc / it->second.rot_z_unc : 1.;
+			S_rot_z += it->second.rot_z * w_rot_z;
+			Sw_rot_z += w_rot_z;
 		}
 		
-		mean.sh_x /= streams.size();
-		mean.sh_y /= streams.size();
-		mean.rot_z /= streams.size();
+		mean.sh_x = S_sh_x / Sw_sh_x;
+		mean.sh_y = S_sh_y / Sw_sh_y;
+		mean.rot_z = S_rot_z / Sw_rot_z;
 
 		return mean;
 	}
@@ -143,7 +155,10 @@ int main()
 
 	// define input
 	AlignmentInput input_sh_x("copy_alignment.out", "copy_alignment", {"DoubleEG"});
-	AlignmentInput input_sh_y("y_alignment.out", "y_alignment", {"DoubleEG", "SingleMuon"});
+
+	//AlignmentInput input_sh_y("y_alignment.out", "y_alignment", {"DoubleEG", "SingleMuon"});
+	AlignmentInput input_sh_y("y_alignment_alt.out", "y_alignment_alt", {"DoubleEG", "SingleMuon", "ZeroBias"});
+
 	AlignmentInput input_rot_z("rot_z_alignment.out", "rot_z_alignment", {"DoubleEG"});
 
 	//const string output_tag = "_2018_07_16";
