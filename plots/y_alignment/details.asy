@@ -28,11 +28,12 @@ string datasets[] = {
 };
 
 string datasets[] = {
-	"phys_no_margin/fill_5024/DoubleEG",
-	"phys_no_margin/fill_5026/DoubleEG",
-	"phys_no_margin/fill_5038/DoubleEG",
-	"phys_no_margin/fill_5045/DoubleEG",
-	"phys_no_margin/fill_5261/DoubleEG",
+	//"phys_no_margin/fill_5005/DoubleEG",
+	//"phys_no_margin/fill_5017/DoubleEG",
+	//"phys_no_margin/fill_5020/DoubleEG",
+	//"phys_no_margin/fill_5021/DoubleEG",
+	//"phys_no_margin/fill_5027/DoubleEG",
+	"phys_no_margin/fill_5028/DoubleEG",
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ for (int dsi : datasets.keys)
 		NewPad("$x\ung{mm}$", "mean of $y\ung{mm}$");
 	
 		RootObject profile = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/p_y_vs_x");
-		RootObject fit = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/p_y_vs_x|ff", error=true);
+		RootObject fit = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/p_y_vs_x|ff_sl_fix", error=true);
 		RootObject results = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/g_results");
 
 		if (!fit.valid)
@@ -75,8 +76,9 @@ for (int dsi : datasets.keys)
 		results.vExec("GetPoint", 0, ax, ay); real sh_x = ax[0];
 		results.vExec("GetPoint", 1, ax, ay); real a = ax[0], a_unc = ay[0];
 		results.vExec("GetPoint", 2, ax, ay); real b = ax[0], b_unc = ay[0];
+		results.vExec("GetPoint", 3, ax, ay); real b_fs = ax[0], b_fs_unc = ay[0];
 
-		draw((-sh_x, b), mCi+3pt+magenta);
+		draw((-sh_x, b_fs), mCi+3pt+magenta);
 	
 		limits((2, y_cen - 0.5), (18, y_cen + 0.5), Crop);
 

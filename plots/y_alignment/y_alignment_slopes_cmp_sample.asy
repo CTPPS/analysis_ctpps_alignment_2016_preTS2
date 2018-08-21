@@ -24,7 +24,7 @@ rp_ids.push(2); rps.push("L_1_N"); rp_labels.push("L-210-nr-hr"); rp_y_min.push(
 rp_ids.push(102); rps.push("R_1_N"); rp_labels.push("R-210-nr-hr"); rp_y_min.push(-0.04); rp_y_max.push(+0.01);
 rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr-hr"); rp_y_min.push(-0.04); rp_y_max.push(+0.01);
 
-xSizeDef = 15cm;
+xSizeDef = 20cm;
 
 yTicksDef = RightTicks(0.01, 0.005);
 

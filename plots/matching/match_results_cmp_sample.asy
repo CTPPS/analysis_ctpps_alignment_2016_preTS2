@@ -53,6 +53,9 @@ NewPad(false, 1, 1);
 
 AddToLegend("(" + method + ")");
 
+AddToLegend("with margin", mSq+false+3pt+black);
+AddToLegend("without margin", mCi+true+3pt+black);
+
 for (int sai : sample_labels.keys)
 {
 	AddToLegend(sample_labels[sai], sample_pens[sai]);
@@ -97,7 +100,7 @@ for (int rpi : rps.keys)
 
 			write("        " + dataset);
 	
-			mark m = mCi+3pt;
+			mark m = (fill_data[fdi].datasets[dsi].margin) ? mSq+3pt+false : mCi+3pt;
 	
 			for (int sai : sample_labels.keys)
 			{
@@ -131,7 +134,7 @@ for (int rpi : rps.keys)
 	}
 
 	real y_cen = rp_shift_m[rpi];
-	limits((-1, y_cen-1), (fill_data.length, y_cen+1), Crop);
+	limits((-1, y_cen-1.3), (fill_data.length, y_cen+1.3), Crop);
 	//xlimits(-1, fill_data.length, Crop);
 
 	AttachLegend("{\SetFontSizesXX " + rp_labels[rpi] + "}");
