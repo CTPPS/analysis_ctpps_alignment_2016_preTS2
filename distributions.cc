@@ -307,10 +307,10 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 				p_x_diffFN_vs_x_N->Fill(trUp.getX(), trDw.getX() - trUp.getX());
 
 				// TODO: remove hardcoded configuration
-				double x_cutoff = 0.;
-				if (name == "sector 45") x_cutoff = 11.5;
-				if (name == "sector 56") x_cutoff = 8.0;
-				if (trDw.getX() > x_cutoff)
+				double x_min = 0., x_max = 0.;
+				if (name == "sector 45") { x_min = 12.0; x_max = 16.; }
+				if (name == "sector 56") { x_max = 9.5; x_max = 13.; }
+				if (trDw.getX() > x_min && trDw.getX() < x_max)
 				{
 					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
 					p_y_diffFN_vs_y_F->Fill(trDw.getY(), trDw.getY() - trUp.getY());
