@@ -157,7 +157,7 @@ int main()
 	AlignmentInput input_sh_x("copy_alignment.out", "copy_alignment", {"DoubleEG"});
 
 	//AlignmentInput input_sh_y("y_alignment.out", "y_alignment", {"DoubleEG", "SingleMuon"});
-	AlignmentInput input_sh_y("y_alignment_alt.out", "y_alignment_alt", {"DoubleEG", "SingleMuon", "ZeroBias"});
+	AlignmentInput input_sh_y("y_alignment_alt.out", "y_alignment_alt", {"DoubleEG", "SingleMuon"});
 
 	AlignmentInput input_rot_z("rot_z_alignment.out", "rot_z_alignment", {"DoubleEG"});
 
