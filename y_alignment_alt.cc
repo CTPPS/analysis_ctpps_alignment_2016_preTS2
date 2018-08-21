@@ -36,11 +36,13 @@ int main()
 		string name;
 		unsigned int rp_id_N;
 		unsigned int rp_id_F;
+		double corr_N;
+		double corr_F;
 	};
 
 	vector<ArmData> armData = {
-		{ "sector 45", 2, 3 },
-		{ "sector 56", 102, 103 },
+		{ "sector 45", 2, 3, +0.175, +0.175 },
+		{ "sector 56", 102, 103, +0.075, +0.075 },
 	};
 
 	// get input
@@ -120,8 +122,8 @@ int main()
 		printf("    F - N: y0 = %.3f\n", y0_F - y0_N);
 
 		const double c = ((yd_N + yd_F) / 2. - (y0_F - y0_N) ) / 2.;
-		const double sh_y_N = y0_N - c;
-		const double sh_y_F = y0_F + c;
+		const double sh_y_N = y0_N - c + ad.corr_N;
+		const double sh_y_F = y0_F + c + ad.corr_F;
 
 		printf("    sh_y_N = %.3f, sh_y_F = %.3f\n", sh_y_N, sh_y_F);
 
