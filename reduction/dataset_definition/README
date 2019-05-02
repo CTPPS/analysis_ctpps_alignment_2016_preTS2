@@ -1,0 +1,6 @@
+1. make per-fill JSONs
+	mkdir json
+	make && ./make_json
+
+2. apply RP in & CMS selection
+	./apply_selection
